@@ -10,7 +10,7 @@ import (
 var db *sql.DB
 
 func setupDatabase() *sql.DB {
-	db, err := sql.Open("mysql", "root:1234@tcp(localhost:3306)/employee")
+	db, err := sql.Open("mysql", "root:1234@tcp(localhost:3306)/golang")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,7 +24,7 @@ func createTable() {
 		feed_uuid VARCHAR(255),
 		file_source_name VARCHAR(255),
 		feed_index_name VARCHAR(255),
-		targets VARCHAR(255),
+		target_partner VARCHAR(255),
 		call_minutes INT,
 		tags VARCHAR(255)
 	)`

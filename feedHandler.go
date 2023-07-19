@@ -12,7 +12,7 @@ type FeedConfiguration struct {
 	FeedUUID        string `json:"feed_uuid"`
 	FileSourceName  string `json:"file_source_name"`
 	FeedIndexName   string `json:"feed_index_name"`
-	Targets         string `json:"targets"`
+	TargetPartner   string `json:"target_partner"`
 	CallMinutes     int    `json:"call_minutes"`
 	Tags            string `json:"tags"`
 }
@@ -29,7 +29,7 @@ func getAllFeedConfigurations(c *gin.Context) {
 
 	for rows.Next() {
 		var fc FeedConfiguration
-		err := rows.Scan(&fc.FeedID, &fc.FeedName, &fc.FeedUUID, &fc.FileSourceName, &fc.FeedIndexName, &fc.Targets, &fc.CallMinutes, &fc.Tags)
+		err := rows.Scan(&fc.FeedID, &fc.FeedName, &fc.FeedUUID, &fc.FileSourceName, &fc.FeedIndexName, &fc.TargetPartner, &fc.CallMinutes, &fc.Tags)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -46,7 +46,7 @@ func getFeedConfiguration(c *gin.Context) {
 	var fc FeedConfiguration
 
 	err := db.QueryRow("SELECT * FROM feed_configurations WHERE id = ?", id).
-		Scan(&fc.FeedID, &fc.FeedName, &fc.FeedUUID, &fc.FileSourceName, &fc.FeedIndexName, &fc.Targets, &fc.CallMinutes, &fc.Tags)
+		Scan(&fc.FeedID, &fc.FeedName, &fc.FeedUUID, &fc.FileSourceName, &fc.FeedIndexName, &fc.TargetPartner, &fc.CallMinutes, &fc.Tags)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -62,10 +62,10 @@ func createFeedConfiguration(c *gin.Context) {
 		return
 	}
 
-	insertQuery := `INSERT INTO feed_configurations (feed_name, feed_uuid, file_source_name, feed_index_name, targets, call_minutes, tags)
+	insertQuery := `INSERT INTO feed_configurations (feed_name, feed_uuid, file_source_name, feed_index_name, target_partner, call_minutes, tags)
 		VALUES (?, ?, ?, ?, ?, ?, ?)`
 
-	_, err := db.Exec(insertQuery, fc.FeedName, fc.FeedUUID, fc.FileSourceName, fc.FeedIndexName, fc.Targets, fc.CallMinutes, fc.Tags)
+	_, err := db.Exec(insertQuery, fc.FeedName, fc.FeedUUID, fc.FileSourceName, fc.FeedIndexName, fc.TargetPartner, fc.CallMinutes, fc.Tags)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -83,10 +83,10 @@ func updateFeedConfiguration(c *gin.Context) {
 		return
 	}
 
-	updateQuery := `UPDATE feed_configurations SET feed_name = ?, feed_uuid = ?, file_source_name = ?, feed_index_name = ?, targets = ?, call_minutes = ?, tags = ?
+	updateQuery := `UPDATE feed_configurations SET feed_name = ?, feed_uuid = ?, file_source_name = ?, feed_index_name = ?, target_partners = ?, call_minutes = ?, tags = ?
 		WHERE id = ?`
 
-	_, err := db.Exec(updateQuery, fc.FeedName, fc.FeedUUID, fc.FileSourceName, fc.FeedIndexName, fc.Targets, fc.CallMinutes, fc.Tags, id)
+	_, err := db.Exec(updateQuery, fc.FeedName, fc.FeedUUID, fc.FileSourceName, fc.FeedIndexName, fc.TargetPartner, fc.CallMinutes, fc.Tags, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
